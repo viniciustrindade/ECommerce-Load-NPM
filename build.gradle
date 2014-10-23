@@ -1,8 +1,9 @@
 apply plugin: 'java'
 apply plugin:'application'
 
-zipName='load-generator';
 mainClassName='com.appdynamics.demo.LoadRunner';
+
+
 version ='';
 repositories {
     mavenCentral()
@@ -15,6 +16,7 @@ dependencies {
 }
 distZip {
         doLast {
-            file("$destinationDir/$archiveName").renameTo("$destinationDir/"+zipName+version+'.zip');
+            file("$destinationDir/$archiveName").renameTo("$destinationDir/"+'load-generator'+version+'.zip');
+
         }
     }
