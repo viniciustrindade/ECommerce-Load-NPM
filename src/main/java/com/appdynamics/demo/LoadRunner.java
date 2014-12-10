@@ -26,7 +26,7 @@ public class LoadRunner
     private void run() {
         while (true) {
             for (int i = 0; i < numOfUsers; i++) {
-               pool.schedule(new AcmeCartScenarioOneTest(host, port, waitTime), rampUpTime, TimeUnit.MILLISECONDS);
+               pool.schedule(new AcmeCartScenarioTwoTest(host, port, waitTime), rampUpTime, TimeUnit.MILLISECONDS);
             }
             sleep();
         }
