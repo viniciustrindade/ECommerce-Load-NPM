@@ -45,6 +45,7 @@ public class AcmeCartScenarioTwoTest extends  AcmeSessionLoadTest{
         facebookHack = driver.findElement(By.id("fb"));
         try {Thread.currentThread().sleep(500);} catch (Exception ex){}
         submit.click();
+        try {Thread.currentThread().sleep(500);} catch (Exception ex){}
 
     }
 
