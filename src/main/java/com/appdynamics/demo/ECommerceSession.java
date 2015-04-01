@@ -34,10 +34,7 @@ public abstract class ECommerceSession extends SessionLoadTest {
     void logout() {
         WebDriver driver = getDriver();
         driver.get(getScheme() + getHost() + ':' +  getPort() + "/appdynamicspilot/UserLogOut.action");
-        //WebElement facebookHack = driver.findElement(By.id("fb"));
-        //try {Thread.currentThread().sleep(500);} catch (Exception ex){}
-        //facebookHack.click();
-
+        logger.info("Logged out");
     }
 
     @Override
