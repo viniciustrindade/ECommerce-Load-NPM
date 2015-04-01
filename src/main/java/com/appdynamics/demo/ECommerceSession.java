@@ -9,10 +9,10 @@ import java.util.logging.Level;
 /**
  * Created by aleftik on 6/18/14.
  */
-public abstract class AcmeSessionLoadTest extends SessionLoadTest {
+public abstract class ECommerceSession extends SessionLoadTest {
 
 
-    public AcmeSessionLoadTest(String host, int port, int callDelay) {
+    public ECommerceSession(String host, int port, int callDelay) {
         super(host, port, callDelay);
     }
 
@@ -26,19 +26,17 @@ public abstract class AcmeSessionLoadTest extends SessionLoadTest {
       facebookHack.click();
       try {Thread.currentThread().sleep(500);} catch (Exception ex){}
       driver.findElement(By.id("UserLogin_Login")).click();
-      logger.info("loging into " + getScheme() + getHost() +':' + getPort() + getLoginUrl());
+      logger.info("Logging into " + getScheme() + getHost() +':' + getPort() + getLoginUrl());
 
     }
 
     @Override
     void logout() {
-        logger.info("loging into " + getScheme() + getHost() +':' + getPort() + getLoginUrl());
         WebDriver driver = getDriver();
-        logger.info("loging into " + getScheme() + getHost() +':' + getPort() + getLoginUrl());
         driver.get(getScheme() + getHost() + ':' +  getPort() + "/appdynamicspilot/UserLogOut.action");
-        WebElement facebookHack = driver.findElement(By.id("fb"));
-        try {Thread.currentThread().sleep(500);} catch (Exception ex){}
-        facebookHack.click();
+        //WebElement facebookHack = driver.findElement(By.id("fb"));
+        //try {Thread.currentThread().sleep(500);} catch (Exception ex){}
+        //facebookHack.click();
 
     }
 
