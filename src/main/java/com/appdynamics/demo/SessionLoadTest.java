@@ -6,8 +6,8 @@ package com.appdynamics.demo;
 public abstract class SessionLoadTest extends StaticRequestLoadTest {
 
 
-     public SessionLoadTest(String host, int port, int callDelay) {
-         super(host, port, callDelay);
+     public SessionLoadTest(String host, int port, int angularPort, int callDelay) {
+         super(host, port, angularPort, callDelay);
      }
 
     abstract void login();

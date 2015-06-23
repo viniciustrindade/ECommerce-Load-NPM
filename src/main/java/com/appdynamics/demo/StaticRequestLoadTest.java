@@ -2,7 +2,9 @@ package com.appdynamics.demo;
 
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebDriver;
+
 import java.util.concurrent.TimeUnit;
+
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 
@@ -18,12 +20,14 @@ public abstract class StaticRequestLoadTest implements Runnable {
     private int callDelay = 0;
     private WebDriver driver;
     private int port = 80;
+    private int angularPort = 8080;
 
 
-    public StaticRequestLoadTest(String host, int port, int callDelay) {
+    public StaticRequestLoadTest(String host, int port, int angularPort, int callDelay) {
         this.host = host;
         this.port = port;
         this.callDelay = callDelay;
+        this.angularPort = angularPort;
     }
 
     public void init() {
@@ -50,7 +54,7 @@ public abstract class StaticRequestLoadTest implements Runnable {
     }
 
     protected void executeTest() {
-        for (int i=0; i < getUrls().length; i++) {
+        for (int i = 0; i < getUrls().length; i++) {
             fetchUrl(getUrls()[i]);
             sleep();
         }
@@ -66,7 +70,7 @@ public abstract class StaticRequestLoadTest implements Runnable {
 
     private void fetchUrl(String uri) {
         if (driver != null) {
-            String url = "http://"+ host+uri;
+            String url = "http://" + host + uri;
             logger.info("fetching :" + url);
             driver.get(url);
         } else {
@@ -97,5 +101,9 @@ public abstract class StaticRequestLoadTest implements Runnable {
         return this.port;
     }
 
-    abstract String [] getUrls();
+    protected int getAngularPort() {
+        return this.angularPort;
+    }
+
+    abstract String[] getUrls();
 }
