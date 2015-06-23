@@ -29,6 +29,7 @@ public class ECommerceCheckout extends ECommerceSession {
 
         WebDriver angularDriver = getDriver();
         angularDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        angularDriver.get(getScheme() + getHost() + ':' + getAngularPort() + getAngularProductsUrl());
 
         try {
 
@@ -81,7 +82,7 @@ public class ECommerceCheckout extends ECommerceSession {
     @Override
     String getUsername() {
         String user;
-        
+
         switch (randomGen.nextInt(35)) {
             case 0: user = "amitabhbachchan@foobar.com"; break;
             case 1: user = "christopher.lee@foobar.com"; break;
@@ -138,6 +139,11 @@ public class ECommerceCheckout extends ECommerceSession {
     @Override
     String getAngularLoginUrl() {
         return "/AngularUI/#/login";
+    }
+
+    @Override
+    String getAngularProductsUrl() {
+        return "/AngularUI/#/";
     }
 
     String getAngularCartUrl() {

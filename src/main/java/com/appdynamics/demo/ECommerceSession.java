@@ -46,6 +46,15 @@ public abstract class ECommerceSession extends SessionLoadTest {
         WebDriver driver = getDriver();
         driver.get(getScheme() + getHost() + ':' + getPort() + "/appdynamicspilot/UserLogOut.action");
         logger.info("Logged out");
+
+        //Angular
+        WebDriver angularDriver = getDriver();
+        angularDriver.get(getScheme() + getHost() + ':' + getAngularPort() + getAngularProductsUrl());
+        WebElement checkoutElem = angularDriver.findElement(By.id("aLogOut"));
+        if(checkoutElem != null){
+            checkoutElem.click();
+            logger.info("Angular - Logged out");
+        }
     }
 
     @Override
@@ -54,6 +63,8 @@ public abstract class ECommerceSession extends SessionLoadTest {
     abstract String getLoginUrl();
 
     abstract String getAngularLoginUrl();
+
+    abstract String getAngularProductsUrl();
 
     abstract String getUsername();
 
