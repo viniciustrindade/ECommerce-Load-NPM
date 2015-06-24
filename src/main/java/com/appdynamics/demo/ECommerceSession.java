@@ -13,7 +13,7 @@ public abstract class ECommerceSession extends SessionLoadTest {
 
 
     public ECommerceSession(String host, int port, int angularPort, int callDelay) {
-        super(host, port,angularPort, callDelay);
+        super(host, port, angularPort, callDelay);
     }
 
     @Override
@@ -31,14 +31,6 @@ public abstract class ECommerceSession extends SessionLoadTest {
         }
         driver.findElement(By.id("UserLogin_Login")).click();
         logger.info("Logging into " + getScheme() + getHost() + ':' + getPort() + getLoginUrl());
-
-        //Angular
-        WebDriver angularDriver = getDriver();
-        angularDriver.get(getScheme() + getHost() + ':' + getAngularPort() + getAngularLoginUrl());
-        angularDriver.findElement(By.id("username")).sendKeys(getUsername());
-        angularDriver.findElement(By.id("password")).sendKeys(getPassword());
-        angularDriver.findElement(By.id("btnLogin")).click();
-        logger.info("Logging into Angular " + getScheme() + getHost() + ':' + getAngularPort() + getAngularLoginUrl());
     }
 
     @Override
@@ -46,25 +38,12 @@ public abstract class ECommerceSession extends SessionLoadTest {
         WebDriver driver = getDriver();
         driver.get(getScheme() + getHost() + ':' + getPort() + "/appdynamicspilot/UserLogOut.action");
         logger.info("Logged out");
-
-        //Angular
-        WebDriver angularDriver = getDriver();
-        angularDriver.get(getScheme() + getHost() + ':' + getAngularPort() + getAngularProductsUrl());
-        WebElement checkoutElem = angularDriver.findElement(By.id("aLogOut"));
-        if(checkoutElem != null){
-            checkoutElem.click();
-            logger.info("Angular - Logged out");
-        }
     }
 
     @Override
     abstract void performLoad();
 
     abstract String getLoginUrl();
-
-    abstract String getAngularLoginUrl();
-
-    abstract String getAngularProductsUrl();
 
     abstract String getUsername();
 

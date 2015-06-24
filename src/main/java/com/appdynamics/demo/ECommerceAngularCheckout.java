@@ -4,48 +4,46 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import java.util.Random;
-
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Created by aleftik on 6/18/14.
  */
-public class ECommerceCheckout extends ECommerceSession {
+public class ECommerceAngularCheckout extends ECommerceAngularSession {
 
     static private final Random randomGen = new Random();
 
-    public ECommerceCheckout(String host, int port, int angularPort, int callDelay) {
+    public ECommerceAngularCheckout(String host, int port, int angularPort, int callDelay) {
         super(host, port, angularPort, callDelay);
     }
 
     @Override
     void performLoad() {
+        WebDriver angularDriver = getDriver();
+        angularDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        angularDriver.get(getScheme() + getHost() + ':' + getAngularPort() + getAngularProductsUrl());
 
-
-        WebDriver driver = getDriver();
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         try {
-
-            //jsp
-            List<WebElement> checkBoxes = driver.findElements(By.id("selectedId"));
-
-            int numBooks = randomGen.nextInt(5);
-            for (int i = 0; i < numBooks + 1; i++) {
-                int bookNumber = randomGen.nextInt(checkBoxes.size() - 1);
-                WebElement randCBox = (WebElement) checkBoxes.toArray()[bookNumber];
-                randCBox.click();
-                logger.info("Selected book # " + bookNumber);
+            //Angular
+            List<WebElement> ids = angularDriver.findElements(By.id("prodid"));
+            int angularNumBooks = randomGen.nextInt(5);
+            for (int i = 0; i < angularNumBooks + 1; i++) {
+                int bookNumber = 1 + randomGen.nextInt(ids.size() - 1);
+                WebElement angularAddToCart = angularDriver.findElement(By.xpath("//div[@id='prodid' and text()=" + bookNumber + "]")).findElement(By.xpath("./following-sibling::button"));
+                logger.info("Angular - Selected book # " + bookNumber);
+                angularAddToCart.click();
+                logger.info("Angular - Items added to Cart");
             }
 
-            WebElement addToCart = driver.findElement(By.id("itemsForm_submitValue"));
-            addToCart.click();
-            logger.info("Items added to Cart");
+            WebDriver angularCheckoutDriver = getDriver();
+            angularCheckoutDriver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+            angularCheckoutDriver.get(getScheme() + getHost() + ':' + getAngularPort() + getAngularCartUrl());
 
-            WebElement submit = driver.findElement(By.id("ViewCart_submitValue"));
-            submit.click();
-            logger.info("Checkout Cart");
+            WebElement angularSubmit = angularCheckoutDriver.findElement(By.id("btnCheckout"));
+            angularSubmit.click();
+            logger.info("Angular - Checkout Cart");
 
         } catch (Exception ex) {
             logger.warning("Ignored Exception");
@@ -106,8 +104,17 @@ public class ECommerceCheckout extends ECommerceSession {
     }
 
     @Override
-    String getLoginUrl() {
-        return "/appdynamicspilot/";
+    String getAngularLoginUrl() {
+        return "/angular/#/login";
+    }
+
+    @Override
+    String getAngularProductsUrl() {
+        return "/angular/#/";
+    }
+
+    String getAngularCartUrl() {
+        return "/angular/#/cart";
     }
 
     String getScheme() {

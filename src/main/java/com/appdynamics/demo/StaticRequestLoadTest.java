@@ -72,8 +72,10 @@ public abstract class StaticRequestLoadTest implements Runnable {
         if (driver != null) {
             String url = "http://" + host + uri;
             logger.info("fetching :" + url);
+            System.out.println("fetching :" + url);
             driver.get(url);
         } else {
+            System.out.println("*** Web driver is null nothing to fetch ***");
             logger.info("*** Web driver is null nothing to fetch ***");
         }
 

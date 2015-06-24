@@ -28,6 +28,7 @@ public class LoadRunner
         while (true) {
             for (int i = 0; i < numOfUsers; i++) {
                pool.schedule(new ECommerceCheckout(host, port,angularPort, waitTime), rampUpTime, TimeUnit.MILLISECONDS);
+                pool.schedule(new ECommerceAngularCheckout(host, port,angularPort, waitTime), rampUpTime, TimeUnit.MILLISECONDS);
             }
             sleep();
         }
