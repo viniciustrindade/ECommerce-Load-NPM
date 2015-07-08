@@ -2,7 +2,9 @@ package com.appdynamics.demo;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by aleftik on 6/18/14.
@@ -10,8 +12,8 @@ import org.openqa.selenium.WebElement;
 public abstract class ECommerceAngularSession extends SessionLoadTest {
 
 
-    public ECommerceAngularSession(String host, int port, int angularPort, int callDelay) {
-        super(host, port, angularPort, callDelay);
+    public ECommerceAngularSession(String host, int port, int angularPort, int callDelay, Map<Integer,Map<String,String>> mapUser) {
+        super(host, port, angularPort, callDelay, mapUser);
     }
 
     @Override
@@ -19,8 +21,11 @@ public abstract class ECommerceAngularSession extends SessionLoadTest {
         //Angular
         WebDriver angularDriver = getDriver();
         angularDriver.get(getScheme() + getHost() + ':' + getAngularPort() + getAngularLoginUrl());
-        angularDriver.findElement(By.id("username")).sendKeys(getUsername());
-        angularDriver.findElement(By.id("password")).sendKeys(getPassword());
+        HashMap<String,String> mapUserInfo = getUserInfo();
+        String userName = (String) mapUserInfo.keySet().toArray()[0];
+        String password =  mapUserInfo.get(userName);
+        angularDriver.findElement(By.id("username")).sendKeys(userName);
+        angularDriver.findElement(By.id("password")).sendKeys(password);
         angularDriver.findElement(By.id("btnLogin")).click();
         logger.info("Logging into Angular " + getScheme() + getHost() + ':' + getAngularPort() + getAngularLoginUrl());
     }
@@ -37,9 +42,7 @@ public abstract class ECommerceAngularSession extends SessionLoadTest {
 
     abstract String getAngularProductsUrl();
 
-    abstract String getUsername();
-
-    abstract String getPassword();
+    abstract HashMap<String,String> getUserInfo();
 
     abstract String getScheme();
 }

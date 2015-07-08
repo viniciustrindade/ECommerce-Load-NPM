@@ -1,14 +1,12 @@
 package com.appdynamics.demo;
 
-import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebDriver;
-
-import java.util.concurrent.TimeUnit;
-
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 
-import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 /**
@@ -21,13 +19,15 @@ public abstract class StaticRequestLoadTest implements Runnable {
     private WebDriver driver;
     private int port = 80;
     private int angularPort = 8080;
+    private Map<Integer, Map<String, String>> mapUser = new HashMap<>();
 
 
-    public StaticRequestLoadTest(String host, int port, int angularPort, int callDelay) {
+    public StaticRequestLoadTest(String host, int port, int angularPort, int callDelay, Map<Integer, Map<String, String>> mapUser) {
         this.host = host;
         this.port = port;
         this.callDelay = callDelay;
         this.angularPort = angularPort;
+        this.mapUser = mapUser;
     }
 
     public void init() {
@@ -105,6 +105,10 @@ public abstract class StaticRequestLoadTest implements Runnable {
 
     protected int getAngularPort() {
         return this.angularPort;
+    }
+
+    protected Map<Integer, Map<String, String>> getUserInformation() {
+        return this.mapUser;
     }
 
     abstract String[] getUrls();

@@ -4,7 +4,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import java.util.logging.Level;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by aleftik on 6/18/14.
@@ -12,8 +13,8 @@ import java.util.logging.Level;
 public abstract class ECommerceSession extends SessionLoadTest {
 
 
-    public ECommerceSession(String host, int port, int angularPort, int callDelay) {
-        super(host, port, angularPort, callDelay);
+    public ECommerceSession(String host, int port, int angularPort, int callDelay,   Map<Integer,Map<String,String>> mapUser) {
+        super(host, port, angularPort, callDelay, mapUser);
     }
 
     @Override
@@ -21,8 +22,11 @@ public abstract class ECommerceSession extends SessionLoadTest {
         //jsp
         WebDriver driver = getDriver();
         driver.get(getScheme() + getHost() + ':' + getPort() + getLoginUrl());
-        driver.findElement(By.id("textBox")).sendKeys(getUsername());
-        driver.findElement(By.id("password")).sendKeys(getPassword());
+        HashMap<String, String> mapUserInfo = getUserInfo();
+        String userName = (String) mapUserInfo.keySet().toArray()[0];
+        String password = mapUserInfo.get(userName);
+        driver.findElement(By.id("textBox")).sendKeys(userName);
+        driver.findElement(By.id("password")).sendKeys(password);
         WebElement facebookHack = driver.findElement(By.id("fb"));
         facebookHack.click();
         try {
@@ -45,9 +49,7 @@ public abstract class ECommerceSession extends SessionLoadTest {
 
     abstract String getLoginUrl();
 
-    abstract String getUsername();
-
-    abstract String getPassword();
+    abstract HashMap<String,String> getUserInfo();
 
     abstract String getScheme();
 }
