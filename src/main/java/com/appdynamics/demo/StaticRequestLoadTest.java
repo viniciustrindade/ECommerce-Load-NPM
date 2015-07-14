@@ -4,6 +4,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -19,15 +23,19 @@ public abstract class StaticRequestLoadTest implements Runnable {
     private WebDriver driver;
     private int port = 80;
     private int angularPort = 8080;
-    private Map<Integer, Map<String, String>> mapUser = new HashMap<>();
+    private String mysqlHost = null;
+    private String mysqlUserName = null;
+    private String mysqlPwd = null;
 
 
-    public StaticRequestLoadTest(String host, int port, int angularPort, int callDelay, Map<Integer, Map<String, String>> mapUser) {
+    public StaticRequestLoadTest(String host, int port, int angularPort, int callDelay, String mysqlHost, String mysqlUserName,String mysqlPwd) {
         this.host = host;
         this.port = port;
         this.callDelay = callDelay;
         this.angularPort = angularPort;
-        this.mapUser = mapUser;
+        this.mysqlHost = mysqlHost;
+        this.mysqlUserName = mysqlUserName;
+        this.mysqlPwd = mysqlPwd;
     }
 
     public void init() {
@@ -107,8 +115,40 @@ public abstract class StaticRequestLoadTest implements Runnable {
         return this.angularPort;
     }
 
-    protected Map<Integer, Map<String, String>> getUserInformation() {
-        return this.mapUser;
+    protected String getMySqlHost() {
+        return this.mysqlHost;
+    }
+
+    protected String getMySqlUserName() {
+        return this.mysqlUserName;
+    }
+
+    protected String getMySqlPwd() {
+        return this.mysqlPwd;
+    }
+
+    protected Map<Integer, Map<String, String>>  getUserInformation() {
+        Map<Integer, Map<String, String>> mapUser = new HashMap<>();
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection con = DriverManager.getConnection("jdbc:mysql://" + getMySqlHost() + ":3306/appdy?"
+                    + "user=" + getMySqlUserName() + "&password=" + getMySqlPwd());
+            logger.info("jdbc:mysql://" + getMySqlHost() + ":3306/appdy?"
+                    + "user=" + getMySqlUserName() + "&password=" + getMySqlPwd());
+            PreparedStatement statement = con.prepareStatement("select * from appdy.user");
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                Map<String, String> mapUserPwd = new HashMap<>();
+                logger.info(resultSet.getString("email") + " " + resultSet.getString("password"));
+                mapUserPwd.put(resultSet.getString("email"), resultSet.getString("password"));
+                mapUser.put(resultSet.getInt("id"), mapUserPwd);
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return mapUser;
     }
 
     abstract String[] getUrls();

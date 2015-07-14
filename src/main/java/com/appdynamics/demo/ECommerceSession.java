@@ -13,8 +13,8 @@ import java.util.Map;
 public abstract class ECommerceSession extends SessionLoadTest {
 
 
-    public ECommerceSession(String host, int port, int angularPort, int callDelay,   Map<Integer,Map<String,String>> mapUser) {
-        super(host, port, angularPort, callDelay, mapUser);
+    public ECommerceSession(String host, int port, int angularPort, int callDelay, String mysqlHost, String mysqlUserName,String mysqlPwd) {
+        super(host, port, angularPort, callDelay, mysqlHost,mysqlUserName,mysqlPwd);
     }
 
     @Override

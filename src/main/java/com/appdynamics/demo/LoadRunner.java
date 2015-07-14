@@ -1,14 +1,9 @@
 package com.appdynamics.demo;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 /**
  * Hello world!
@@ -24,7 +19,6 @@ public class LoadRunner {
     private static String mysqlHost = "";
     private static String mysqlUserName = "";
     private static String mysqlPwd = "";
-    private static Map<Integer, Map<String, String>> mapUser = new HashMap<>();
 
 
     ScheduledExecutorService pool;
@@ -40,8 +34,8 @@ public class LoadRunner {
     private void run() {
         while (true) {
             for (int i = 0; i < numOfUsers; i++) {
-                pool.schedule(new ECommerceCheckout(host, port, angularPort, waitTime, mapUser), rampUpTime, TimeUnit.MILLISECONDS);
-                pool.schedule(new ECommerceAngularCheckout(host, port, angularPort, waitTime, mapUser), rampUpTime, TimeUnit.MILLISECONDS);
+                pool.schedule(new ECommerceCheckout(host, port, angularPort, waitTime, mysqlHost,mysqlUserName,mysqlPwd), rampUpTime, TimeUnit.MILLISECONDS);
+                pool.schedule(new ECommerceAngularCheckout(host, port, angularPort, waitTime, mysqlHost,mysqlUserName,mysqlPwd), rampUpTime, TimeUnit.MILLISECONDS);
             }
             sleep();
         }
@@ -58,30 +52,12 @@ public class LoadRunner {
 
     public static void main(String[] args) {
         parseArgs(args);
-        GetUserInformation();
         LoadRunner runner = new LoadRunner();
         runner.init();
         runner.run();
     }
 
-    private static void GetUserInformation() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection con = DriverManager.getConnection("jdbc:mysql://" + mysqlHost + ":3306/appdy?"
-                    + "user=" + mysqlUserName + "&password=" + mysqlPwd);
-            PreparedStatement statement = con.prepareStatement("select * from appdy.user");
-            ResultSet resultSet = statement.executeQuery();
 
-            while (resultSet.next()) {
-                Map<String, String> mapUserPwd = new HashMap<>();
-                mapUserPwd.put(resultSet.getString("email"), resultSet.getString("password"));
-                mapUser.put(resultSet.getInt("id"), mapUserPwd);
-            }
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
 
     private static void parseArgs(String[] args) {
         if (args.length < 3) {
