@@ -27,7 +27,7 @@ public abstract class ECommerceAngularSession extends SessionLoadTest {
         angularDriver.findElement(By.id("username")).sendKeys(userName);
         angularDriver.findElement(By.id("password")).sendKeys(password);
         angularDriver.findElement(By.id("btnLogin")).click();
-        logger.info("Logging into Angular " + getScheme() + getHost() + ':' + getAngularPort() + getAngularLoginUrl());
+
     }
 
     @Override

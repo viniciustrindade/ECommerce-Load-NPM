@@ -56,10 +56,13 @@ public class ECommerceAngularCheckout extends ECommerceAngularSession {
     @Override
     HashMap<String,String> getUserInfo() {
         Map<Integer,Map<String,String>>  mapUser =  getUserInformation();
+        logger.info("userInfo Size : "+ mapUser.size());
         if(mapUser != null && mapUser.size() > 0) {
             Random generator = new Random();
             Object[] values = mapUser.values().toArray();
             HashMap<String,String> randomValue = (HashMap<String,String>) values[generator.nextInt(values.length)];
+            logger.info("User Name : " + randomValue.keySet().toArray()[0]);
+            logger.info("Password : " + randomValue.get(randomValue.keySet().toArray()[0]));
             return randomValue;
         }
         return null;
