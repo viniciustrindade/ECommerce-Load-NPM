@@ -8,8 +8,8 @@ import java.util.Map;
 public abstract class SessionLoadTest extends StaticRequestLoadTest {
 
 
-    public SessionLoadTest(String host, int port, int angularPort, int callDelay, String mysqlHost, String mysqlUserName,String mysqlPwd) {
-        super(host, port, angularPort, callDelay, mysqlHost,mysqlUserName,mysqlPwd);
+    public SessionLoadTest(String host, int port, int angularPort, int callDelay) {
+        super(host, port, angularPort, callDelay);
     }
 
     abstract void login();

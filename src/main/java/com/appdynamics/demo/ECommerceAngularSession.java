@@ -3,17 +3,14 @@ package com.appdynamics.demo;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Created by aleftik on 6/18/14.
  */
 public abstract class ECommerceAngularSession extends SessionLoadTest {
 
 
-    public ECommerceAngularSession(String host, int port, int angularPort, int callDelay, String mysqlHost, String mysqlUserName,String mysqlPwd) {
-        super(host, port, angularPort, callDelay, mysqlHost,mysqlUserName,mysqlPwd);
+    public ECommerceAngularSession(String host, int port, int angularPort, int callDelay) {
+        super(host, port, angularPort, callDelay);
     }
 
     @Override
@@ -21,11 +18,10 @@ public abstract class ECommerceAngularSession extends SessionLoadTest {
         //Angular
         WebDriver angularDriver = getDriver();
         angularDriver.get(getScheme() + getHost() + ':' + getAngularPort() + getAngularLoginUrl());
-        HashMap<String,String> mapUserInfo = getUserInfo();
-        String userName = (String) mapUserInfo.keySet().toArray()[0];
-        String password =  mapUserInfo.get(userName);
-        angularDriver.findElement(By.id("username")).sendKeys(userName);
-        angularDriver.findElement(By.id("password")).sendKeys(password);
+        logger.info("Angular Logging into " + getScheme() + getHost() + ':' + getAngularPort() + getAngularLoginUrl());
+        User user = getUserInfo();
+        angularDriver.findElement(By.id("username")).sendKeys(user.getEmail());
+        angularDriver.findElement(By.id("password")).sendKeys(user.getPassword());
         angularDriver.findElement(By.id("btnLogin")).click();
 
     }
@@ -42,7 +38,7 @@ public abstract class ECommerceAngularSession extends SessionLoadTest {
 
     abstract String getAngularProductsUrl();
 
-    abstract HashMap<String,String> getUserInfo();
+    abstract User getUserInfo();
 
     abstract String getScheme();
 }

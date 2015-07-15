@@ -4,9 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -17,8 +15,8 @@ public class ECommerceAngularCheckout extends ECommerceAngularSession {
 
     static private final Random randomGen = new Random();
 
-    public ECommerceAngularCheckout(String host, int port, int angularPort, int callDelay, String mysqlHost, String mysqlUserName,String mysqlPwd) {
-        super(host, port, angularPort, callDelay, mysqlHost,mysqlUserName,mysqlPwd);
+    public ECommerceAngularCheckout(String host, int port, int angularPort, int callDelay) {
+        super(host, port, angularPort, callDelay);
     }
 
     @Override
@@ -54,16 +52,17 @@ public class ECommerceAngularCheckout extends ECommerceAngularSession {
 
 
     @Override
-    HashMap<String,String> getUserInfo() {
-        Map<Integer,Map<String,String>>  mapUser =  getUserInformation();
-        logger.info("userInfo Size : "+ mapUser.size());
-        if(mapUser != null && mapUser.size() > 0) {
+    User getUserInfo() {
+        List<User> users = getUserInformation();
+        logger.info("userInfo Size : " + users.size());
+        if (users != null && users.size() > 0) {
             Random generator = new Random();
-            Object[] values = mapUser.values().toArray();
-            HashMap<String,String> randomValue = (HashMap<String,String>) values[generator.nextInt(values.length)];
-            logger.info("User Name : " + randomValue.keySet().toArray()[0]);
-            logger.info("Password : " + randomValue.get(randomValue.keySet().toArray()[0]));
-            return randomValue;
+            int index = generator.nextInt(users.size());
+            index = (index == users.size()) ? index - 1 : index;
+            User user = users.get(index);
+            logger.info("User Name : " + user.getEmail());
+            logger.info("Password : " + user.getPassword());
+            return user;
         }
         return null;
     }

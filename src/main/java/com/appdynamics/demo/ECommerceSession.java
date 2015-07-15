@@ -4,17 +4,14 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Created by aleftik on 6/18/14.
  */
 public abstract class ECommerceSession extends SessionLoadTest {
 
 
-    public ECommerceSession(String host, int port, int angularPort, int callDelay, String mysqlHost, String mysqlUserName,String mysqlPwd) {
-        super(host, port, angularPort, callDelay, mysqlHost,mysqlUserName,mysqlPwd);
+    public ECommerceSession(String host, int port, int angularPort, int callDelay) {
+        super(host, port, angularPort, callDelay);
     }
 
     @Override
@@ -22,11 +19,10 @@ public abstract class ECommerceSession extends SessionLoadTest {
         //jsp
         WebDriver driver = getDriver();
         driver.get(getScheme() + getHost() + ':' + getPort() + getLoginUrl());
-        HashMap<String, String> mapUserInfo = getUserInfo();
-        String userName = (String) mapUserInfo.keySet().toArray()[0];
-        String password = mapUserInfo.get(userName);
-        driver.findElement(By.id("textBox")).sendKeys(userName);
-        driver.findElement(By.id("password")).sendKeys(password);
+        logger.info("Logging into " + getScheme() + getHost() + ':' + getPort() + getLoginUrl());
+        User user = getUserInfo();
+        driver.findElement(By.id("textBox")).sendKeys(user.getEmail());
+        driver.findElement(By.id("password")).sendKeys(user.getPassword());
         WebElement facebookHack = driver.findElement(By.id("fb"));
         facebookHack.click();
         try {
@@ -34,7 +30,6 @@ public abstract class ECommerceSession extends SessionLoadTest {
         } catch (Exception ex) {
         }
         driver.findElement(By.id("UserLogin_Login")).click();
-        logger.info("Logging into " + getScheme() + getHost() + ':' + getPort() + getLoginUrl());
     }
 
     @Override
@@ -49,7 +44,8 @@ public abstract class ECommerceSession extends SessionLoadTest {
 
     abstract String getLoginUrl();
 
-    abstract HashMap<String,String> getUserInfo();
+
+    abstract User getUserInfo();
 
     abstract String getScheme();
 }

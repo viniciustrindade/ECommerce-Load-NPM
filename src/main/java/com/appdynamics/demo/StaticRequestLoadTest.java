@@ -1,15 +1,15 @@
 package com.appdynamics.demo;
 
+
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
@@ -23,19 +23,13 @@ public abstract class StaticRequestLoadTest implements Runnable {
     private WebDriver driver;
     private int port = 80;
     private int angularPort = 8080;
-    private String mysqlHost = null;
-    private String mysqlUserName = null;
-    private String mysqlPwd = null;
 
 
-    public StaticRequestLoadTest(String host, int port, int angularPort, int callDelay, String mysqlHost, String mysqlUserName,String mysqlPwd) {
+    public StaticRequestLoadTest(String host, int port, int angularPort, int callDelay) {
         this.host = host;
         this.port = port;
         this.callDelay = callDelay;
         this.angularPort = angularPort;
-        this.mysqlHost = mysqlHost;
-        this.mysqlUserName = mysqlUserName;
-        this.mysqlPwd = mysqlPwd;
     }
 
     public void init() {
@@ -115,40 +109,20 @@ public abstract class StaticRequestLoadTest implements Runnable {
         return this.angularPort;
     }
 
-    protected String getMySqlHost() {
-        return this.mysqlHost;
-    }
+    protected List<User> getUserInformation() {
+        Client client = Client.create();
 
-    protected String getMySqlUserName() {
-        return this.mysqlUserName;
-    }
+        WebResource webResource = client
+                .resource("http://" + getHost() + ":" + getPort() + "/appdynamicspilot/rest/json/user/all");
 
-    protected String getMySqlPwd() {
-        return this.mysqlPwd;
-    }
+        String response = webResource.accept("application/json")
+                .get(String.class);
+        Gson gson = new Gson();
+        TypeToken<List<User>> token = new TypeToken<List<User>>() {
+        };
+        List<User> userList = gson.fromJson(response, token.getType());
+        return userList;
 
-    protected Map<Integer, Map<String, String>>  getUserInformation() {
-        Map<Integer, Map<String, String>> mapUser = new HashMap<>();
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection con = DriverManager.getConnection("jdbc:mysql://" + getMySqlHost() + ":3306/appdy?"
-                    + "user=" + getMySqlUserName() + "&password=" + getMySqlPwd());
-            logger.info("jdbc:mysql://" + getMySqlHost() + ":3306/appdy?"
-                    + "user=" + getMySqlUserName() + "&password=" + getMySqlPwd());
-            PreparedStatement statement = con.prepareStatement("select * from appdy.user");
-            ResultSet resultSet = statement.executeQuery();
-
-            while (resultSet.next()) {
-                Map<String, String> mapUserPwd = new HashMap<>();
-                logger.info(resultSet.getString("email") + " " + resultSet.getString("password"));
-                mapUserPwd.put(resultSet.getString("email"), resultSet.getString("password"));
-                mapUser.put(resultSet.getInt("id"), mapUserPwd);
-            }
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return mapUser;
     }
 
     abstract String[] getUrls();
