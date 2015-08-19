@@ -9,13 +9,9 @@ import java.util.concurrent.TimeUnit;
  */
 public class LoadRunner {
     private static int numOfUsers;
-    private static int rampUpTime;
-    private static int waitTime = 100;
     private static int timeBetweenRuns = 3 * 1000;
     private static int port;
-    private static int angularPort;
-    private static String host = "pm-demo.appdynamics.com";
-    private static String angularHost = "angular";
+    private static String host = "";
 
     ScheduledExecutorService pool;
 
@@ -30,7 +26,8 @@ public class LoadRunner {
     private void run() {
         while (true) {
             for (int i = 0; i < numOfUsers; i++) {
-                pool.schedule(new ECommerceAngularCheckout(host, angularHost, port, angularPort, waitTime), rampUpTime, TimeUnit.MILLISECONDS);
+                ECommerceRest ecommerceRest = new ECommerceRest();
+                ecommerceRest.generateLoad(host,port);
             }
             sleep();
         }
@@ -55,19 +52,12 @@ public class LoadRunner {
 
     private static void parseArgs(String[] args) {
         if (args.length < 3) {
-            System.out.println("Usage: numberOfUsers rampUpTime timeBetweenRuns baseUrl angularUrl port angularPort [waitTime]");
+            System.out.println("Usage: numberOfUsers timeBetweenRuns baseUrl port");
         }
         numOfUsers = Integer.parseInt(args[0]);
-        rampUpTime = Integer.parseInt(args[1]);
-        timeBetweenRuns = Integer.parseInt(args[2]);
-        host = args[3];
-        angularHost = args[4];
-        port = Integer.parseInt(args[5]);
-        angularPort = Integer.parseInt(args[6]);
-
-        if (args.length == 8) {
-            waitTime = Integer.parseInt(args[7]);
-        }
+        timeBetweenRuns = Integer.parseInt(args[1]);
+        host = args[2];
+        port = Integer.parseInt(args[3]);
 
     }
 }
